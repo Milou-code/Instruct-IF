@@ -41,7 +41,7 @@ public class ServiceCompte {
             eleveDao.create(eleve);
             JpaUtil.validerTransaction();
             Message.envoyerMail(
-                    "instructif@insa-lyon.fr", 
+                    "contact@instruct.if", 
                     eleve.getEmail(), 
                     "Inscription Réussie", 
                     "Votre inscription à notre application a fonctionné");
@@ -51,7 +51,7 @@ public class ServiceCompte {
             ex.printStackTrace();
             JpaUtil.annulerTransaction();
             Message.envoyerMail(
-                    "instructif@insa-lyon.fr", 
+                    "contact@instruct.if", 
                     eleve.getEmail(), 
                     "Inscription Échouée", 
                     "Votre inscription à notre application n'a pas fonctionné");
@@ -62,16 +62,18 @@ public class ServiceCompte {
         return creationSucces;
     }
     
-    public Eleve ConnexionEleve(String mail, String mdp){
+    public static Eleve authentificationEleve(String mail, String mdp){
+        JpaUtil.creerContextePersistance();
         EleveDao eleveDao = new EleveDao();
         Eleve e1 = eleveDao.findByLogin(mail, mdp);
         if (e1 == null){
             System.out.println("Erreur de connexion");
         }
+        JpaUtil.fermerContextePersistance();
         return e1;
     }
     
-     public Intervenant ConnexionIntervenant(String mail, String mdp){
+     public static Intervenant authentificationIntervenant(String mail, String mdp){
         IntervenantDao intervenantDao = new IntervenantDao();
         Intervenant i1 = intervenantDao.findByLogin(mail, mdp);
         if (i1 == null){

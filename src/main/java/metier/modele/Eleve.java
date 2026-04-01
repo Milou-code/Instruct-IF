@@ -61,6 +61,10 @@ public class Eleve {
         return email;
     }
 
+    public int getNiveauScolaire() {
+        return niveauScolaire;
+    }
+
     public Etablissement getEtablissement() {
         return etablissement;
     }

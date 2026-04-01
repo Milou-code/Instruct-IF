@@ -30,4 +30,16 @@ public class IntervenantDao {
             return null; // aucun élève trouvé avec ce mail
         }   
     }
+    
+    public Intervenant findIntervenantLibre(int niveauEleve) {
+        try {
+            return JpaUtil.obtenirContextePersistance()
+                    .createQuery("SELECT i FROM Intervenant i WHERE i.niveauScolaireMax <= :niveau AND i.niveauScolaireMin >= :niveau AND i.libre = true ORDER BY i.nbSoutien ASC", Intervenant.class)
+                    .setMaxResults(1)
+                    .setParameter("niveau", niveauEleve)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            return null; // aucun élève trouvé avec ce mail
+        }   
+    }
 }

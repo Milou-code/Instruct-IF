@@ -11,11 +11,14 @@ import metier.modele.Theme;
  * @author echaffraix
  */
 public class ThemeDao {
-    public void create(Theme theme) {
-        JpaUtil.obtenirContextePersistance().persist(theme);
-    }
-    
-    public Theme findById(Long id) {
-        return JpaUtil.obtenirContextePersistance().find(Theme.class, id);
+    public Theme findByName(String nom) {
+        try {
+            return JpaUtil.obtenirContextePersistance()
+                    .createQuery("SELECT t FROM Theme t WHERE t.nom = :nom", Theme.class)
+                    .setParameter("nom", nom)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            return null; // aucun thème trouvé
+        }
     }
 }

@@ -60,67 +60,62 @@ public class ServiceInitialisation {
     }
 
     public static void InitMatiereTheme() {
-    List<Matiere> matieres = new ArrayList<>();
-    List<Theme> themes = new ArrayList<>();
+        try {
+            JpaUtil.creerContextePersistance();
+            JpaUtil.ouvrirTransaction();
 
-    // Création des matières
-    matieres.add(new Matiere("Français"));
-    matieres.add(new Matiere("Mathématiques"));
-    matieres.add(new Matiere("Physique"));
-    matieres.add(new Matiere("Informatique"));
-    matieres.add(new Matiere("Histoire"));
-    matieres.add(new Matiere("Biologie"));
+            MatiereDao matiereDao = new MatiereDao();
 
-    try {
-        JpaUtil.creerContextePersistance();
-        JpaUtil.ouvrirTransaction();
-        
-        // Persistance des matières
-        MatiereDao matiereDao = new MatiereDao();
-        for (Matiere m : matieres) {
-            matiereDao.create(m);
-            System.out.println("Persisté Matière : " + m.getNom());
+            // Français
+            Matiere francais = new Matiere("Français");
+            francais.addTheme(new Theme("Le roman"));
+            francais.addTheme(new Theme("La poésie"));
+            francais.addTheme(new Theme("Le théâtre"));
+            matiereDao.create(francais);
+
+            // Mathématiques
+            Matiere maths = new Matiere("Mathématiques");
+            maths.addTheme(new Theme("Algèbre"));
+            maths.addTheme(new Theme("Géométrie"));
+            maths.addTheme(new Theme("Analyse"));
+            matiereDao.create(maths);
+
+            // Physique
+            Matiere physique = new Matiere("Physique");
+            physique.addTheme(new Theme("Mécanique"));
+            physique.addTheme(new Theme("Électricité"));
+            physique.addTheme(new Theme("Thermodynamique"));
+            matiereDao.create(physique);
+
+            // Informatique
+            Matiere info = new Matiere("Informatique");
+            info.addTheme(new Theme("Programmation"));
+            info.addTheme(new Theme("Bases de données"));
+            info.addTheme(new Theme("Réseaux"));
+            matiereDao.create(info);
+
+            // Histoire
+            Matiere histoire = new Matiere("Histoire");
+            histoire.addTheme(new Theme("Moyen Âge"));
+            histoire.addTheme(new Theme("Renaissance"));
+            histoire.addTheme(new Theme("Révolution française"));
+            matiereDao.create(histoire);
+
+            // Biologie
+            Matiere bio = new Matiere("Biologie");
+            bio.addTheme(new Theme("Botanique"));
+            bio.addTheme(new Theme("Zoologie"));
+            bio.addTheme(new Theme("Génétique"));
+            matiereDao.create(bio);
+
+            JpaUtil.validerTransaction();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JpaUtil.annulerTransaction();
+        } finally {
+            JpaUtil.fermerContextePersistance();
         }
-
-        // Création des thèmes (3 par matière)
-        themes.add(new Theme(matieres.get(0), "Le roman"));
-        themes.add(new Theme(matieres.get(0), "La poésie"));
-        themes.add(new Theme(matieres.get(0), "Le théâtre"));
-
-        themes.add(new Theme(matieres.get(1), "Algèbre"));
-        themes.add(new Theme(matieres.get(1), "Géométrie"));
-        themes.add(new Theme(matieres.get(1), "Analyse"));
-
-        themes.add(new Theme(matieres.get(2), "Mécanique"));
-        themes.add(new Theme(matieres.get(2), "Électricité"));
-        themes.add(new Theme(matieres.get(2), "Thermodynamique"));
-
-        themes.add(new Theme(matieres.get(3), "Programmation"));
-        themes.add(new Theme(matieres.get(3), "Bases de données"));
-        themes.add(new Theme(matieres.get(3), "Réseaux"));
-
-        themes.add(new Theme(matieres.get(4), "Moyen Âge"));
-        themes.add(new Theme(matieres.get(4), "Renaissance"));
-        themes.add(new Theme(matieres.get(4), "Révolution française"));
-
-        themes.add(new Theme(matieres.get(5), "Botanique"));
-        themes.add(new Theme(matieres.get(5), "Zoologie"));
-        themes.add(new Theme(matieres.get(5), "Génétique"));
-
-        // Persistance des thèmes
-        ThemeDao themeDao = new ThemeDao();
-        for (Theme t : themes) {
-            themeDao.create(t);
-            System.out.println("Persisté Theme : " + t.getNom() + " (" + t.getMatiere().getNom() + ")");
-        }
-
-        JpaUtil.validerTransaction();
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        JpaUtil.annulerTransaction();
-    } finally {
-        JpaUtil.fermerContextePersistance();
     }
-}
     
 }

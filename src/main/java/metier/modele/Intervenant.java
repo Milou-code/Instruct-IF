@@ -31,6 +31,8 @@ public class Intervenant {
     private String email;
     private String mdp;
     private String numeroTelephone; 
+    private int nbSoutien;
+    private Boolean libre;
 
     public Intervenant() {
     }
@@ -43,6 +45,8 @@ public class Intervenant {
         this.email = email;
         this.mdp = mdp;
         this.numeroTelephone = numeroTelephone;
+        this.nbSoutien = 0;
+        this.libre = true;
     }
 
     public String getNom() {
@@ -68,6 +72,12 @@ public class Intervenant {
     public String getNumeroTelephone() {
         return numeroTelephone;
     }
+
+    public void setLibre(Boolean libre) {
+        this.libre = libre;
+    }
     
-    
+    public void ajouterSoutien() {
+        this.nbSoutien++;
+    }
 }

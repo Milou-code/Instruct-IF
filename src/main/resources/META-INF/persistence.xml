@@ -10,6 +10,7 @@
     <class>metier.modele.Professeur</class>
     <class>metier.modele.Matiere</class>
     <class>metier.modele.Theme</class>
+    <class>metier.modele.Soutien</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/DASI-DB?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
       <property name="javax.persistence.jdbc.user" value="dasi"/>

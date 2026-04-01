@@ -17,5 +17,16 @@ public class MatiereDao {
     
     public Matiere findById(Long id) {
         return JpaUtil.obtenirContextePersistance().find(Matiere.class, id);
-    }  
+    } 
+    
+    public Matiere findByName(String nom) {
+        try {
+            return JpaUtil.obtenirContextePersistance()
+                    .createQuery("SELECT m FROM Matiere m WHERE m.nom = :nom", Matiere.class)
+                    .setParameter("nom", nom)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            return null; // aucune matière trouvée
+        }
+    }
 }

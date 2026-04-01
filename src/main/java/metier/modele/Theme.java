@@ -26,18 +26,15 @@ public class Theme {
     public Theme() {
     }
 
-    public Theme(Matiere matiere, String nom) {
+    public Theme(String nom) {
         this.nom = nom;
-        this.matiere = matiere;
     }
 
     public String getNom() {
         return nom;
     }
 
-    public Matiere getMatiere() {
-        return matiere;
+    public void setMatiere(Matiere matiere) {
+        this.matiere = matiere;
     }
-    
-    
 }
