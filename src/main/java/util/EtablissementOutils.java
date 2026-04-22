@@ -30,41 +30,77 @@ public class EtablissementOutils {
         
         try {
             printlnConsoleIHM("Début API");
-            // TODO: adapter l'URL de l'API et la liste des paramètres
-            URI requestUri = URI.create(
-                    "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre/records"
-                    + "?refine=numero_uai:"+ URLEncoder.encode(codeUAI, StandardCharsets.UTF_8)
-                );
 
             HttpClient httpClient = HttpClient.newHttpClient();
+            URI requestUri = URI.create(
+                "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre/records"
+                + "?refine=numero_uai:" + URLEncoder.encode(codeUAI, StandardCharsets.UTF_8)
+            );
+
             HttpRequest httpRequest = HttpRequest.newBuilder(requestUri).GET().build();
-            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
             if (httpResponse.statusCode() == 200) {
-                String body = (String) httpResponse.body();
-                System.out.println(body);
-
-                infoEtablissement = Json.createReader(new StringReader(body)).readObject();
-            }
-            else {
-                throw new IOException("HTTP Error Status Code "+httpResponse.statusCode());
+                infoEtablissement = Json.createReader(new StringReader(httpResponse.body())).readObject();
+            } else {
+                throw new IOException("HTTP Error Status Code " + httpResponse.statusCode());
             }
 
-        }
-        catch (Exception ex) {
+            if (infoEtablissement != null) {
+                JsonArray results = infoEtablissement.getJsonArray("results");
+                if (results != null && !results.isEmpty()) {
+                    JsonObject premierResult = results.getJsonObject(0);
+
+                    etablissement.setNom(
+                        premierResult.getString("appellation_officielle", "Nom inconnu")
+                    );
+
+                    if (premierResult.containsKey("latitude") && premierResult.containsKey("longitude")) {
+                        double latitude = premierResult.getJsonNumber("latitude").doubleValue();
+                        double longitude = premierResult.getJsonNumber("longitude").doubleValue();
+
+                        etablissement.setLatitude((float) latitude);
+                        etablissement.setLongitude((float) longitude);
+                    }
+
+                    etablissement.setAcademie(
+                        premierResult.getString("libelle_academie", "Inconnue")
+                    );
+                }
+            }
+
+            URI ipsUri = URI.create(
+                "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-ips_colleges/records"
+                + "?refine=uai:" + URLEncoder.encode(codeUAI, StandardCharsets.UTF_8)
+            );
+
+            HttpRequest ipsRequest = HttpRequest.newBuilder(ipsUri).GET().build();
+            HttpResponse<String> ipsResponse = httpClient.send(ipsRequest, HttpResponse.BodyHandlers.ofString());
+
+            if (ipsResponse.statusCode() == 200) {
+                JsonObject ipsJson = Json.createReader(new StringReader(ipsResponse.body())).readObject();
+                JsonArray resultsIps = ipsJson.getJsonArray("results");
+
+                if (resultsIps != null && !resultsIps.isEmpty()) {
+                    JsonObject ipsResult = resultsIps.getJsonObject(0);
+
+                    if (ipsResult.containsKey("ips")) {
+                        double ipsValue = ipsResult.getJsonNumber("ips").doubleValue();
+                        etablissement.setIPS(String.valueOf(ipsValue));
+                    } else {
+                        etablissement.setIPS(null);
+                    }
+                } else {
+                    etablissement.setIPS(null);
+                }
+            } else {
+                etablissement.setIPS(null);
+            }
+
+        } catch (Exception ex) {
             ex.printStackTrace(System.err);
-            infoEtablissement = null;
         }
-        
-        if (infoEtablissement != null) {
-            JsonArray results = infoEtablissement.getJsonArray("results");
-            if (results != null && !results.isEmpty()) {
-                JsonObject premierResult = results.getJsonObject(0);
-                String appellationOfficielle = premierResult.getString("appellation_officielle", "Nom inconnu");
-                etablissement.setNom(appellationOfficielle);
-            }
-        }
-        
+
         return etablissement;
     }
 }

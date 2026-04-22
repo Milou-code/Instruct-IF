@@ -19,6 +19,10 @@ public class Etablissement {
     @Id
     private String codeUAI;
     private String nom;
+    private String IPS;
+    private float longitude;
+    private float latitude;
+    private String academie;
 
     public Etablissement() {
     }
@@ -36,6 +40,23 @@ public class Etablissement {
         return nom;
     }
 
+    public String getIPS() {
+        return IPS;
+    }
+
+    public float getLongitude() {
+        return longitude;
+    }
+
+    public float getLatitude() {
+        return latitude;
+    }
+
+    public String getAcademie() {
+        return academie;
+    }
+
+   
     public void setNom(String nom) {
         this.nom = nom;
     }
@@ -44,6 +65,22 @@ public class Etablissement {
         this.codeUAI = codeUAI;
     }
 
+    public void setIPS(String IPS) {
+        this.IPS = IPS;
+    }
+
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setAcademie(String academie) {
+        this.academie = academie;
+    }
+    
     @Override
     public String toString() {
         return "Etablissement{" + "codeUAI=" + codeUAI + ", nom=" + nom + '}';
