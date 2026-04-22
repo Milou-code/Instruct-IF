@@ -8,11 +8,13 @@ import dao.JpaUtil;
 import dao.MatiereDao;
 import dao.ThemeDao;
 import java.time.LocalDate;
+import java.util.List;
 import metier.modele.Eleve;
 import metier.modele.Matiere;
+import metier.modele.Soutien;
 import metier.modele.Theme;
-import metier.service.ServiceInitialisation;
 import metier.service.ServiceCompte;
+import metier.service.ServiceInitialisation;
 import metier.service.ServiceSoutien;
 
 /**
@@ -23,8 +25,8 @@ public class Instructif {
 
     public static void main(String[] args) {
         JpaUtil.creerFabriquePersistance();
-        //ServiceInitialisation.InitIntervenants();
-        //ServiceInitialisation.InitMatiereTheme();
+        ServiceInitialisation.InitIntervenants();
+        ServiceInitialisation.InitMatiereTheme();
         testEleve();
         JpaUtil.fermerFabriquePersistance();
     }
@@ -46,7 +48,31 @@ public class Instructif {
             Matiere matiere = matiereDao.findByName("Informatique");
             ThemeDao themeDao = new ThemeDao();
             Theme theme = themeDao.findByName("Programmation");
-            ServiceSoutien.creerDemande(eleve, matiere, theme, "Ceci est une description");
+            Soutien soutien = ServiceSoutien.creerDemande(eleve, matiere, theme, "Ceci est une description");
+            if (soutien.getIntervenant() != null) {
+                ServiceSoutien.envoiBilan(soutien, "Bravo tu as fait une super séance !");
+            }
+            List<Soutien> listeSoutiensEleve = ServiceSoutien.getSoutiensEleve(eleve);
+
+            if (listeSoutiensEleve != null) {
+                for (Soutien s : listeSoutiensEleve) {
+                    System.out.println("---- Soutien ----");
+                    System.out.println(s.toString());
+                }
+            } else {
+                System.out.println("Aucun soutien trouvé ou erreur.");
+            }
+            
+            List<Soutien> listeSoutiensIntervenant = ServiceSoutien.getSoutiensTerminesIntervenant(soutien.getIntervenant());
+
+            if (listeSoutiensIntervenant != null) {
+                for (Soutien s : listeSoutiensEleve) {
+                    System.out.println("---- Soutien ----");
+                    System.out.println(s.toString());
+                }
+            } else {
+                System.out.println("Aucun soutien trouvé ou erreur.");
+            }
         }
     }
     

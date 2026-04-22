@@ -30,6 +30,7 @@ public class Soutien {
     private String lien;
     private String description;
     private String statut;
+    private String bilan;
 
     public Soutien() {
     }
@@ -39,7 +40,7 @@ public class Soutien {
         this.matiere = matiere;
         this.theme = theme;
         this.description = description;
-        this.statut = "NOTFOUND";
+        this.statut = "STARTED";
     }
 
     public void setIntervenant(Intervenant intervenant) {
@@ -50,7 +51,49 @@ public class Soutien {
         this.lien = lien;
     }
 
+    public void setBilan(String bilan) {
+        this.bilan = bilan;
+    }
+
     public void setStatut(String statut) {
         this.statut = statut;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Eleve getEleve() {
+        return eleve;
+    }
+
+    public Intervenant getIntervenant() {
+        return intervenant;
+    }
+
+    public Matiere getMatiere() {
+        return matiere;
+    }
+
+    public Theme getTheme() {
+        return theme;
+    }
+
+    public String getLien() {
+        return lien;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getStatut() {
+        return statut;
+    }
+
+    @Override
+    public String toString() {
+        return "Soutien{" + "id=" + id + ", eleve=" + eleve + ", intervenant=" + intervenant + ", matiere=" + matiere + ", theme=" + theme + ", lien=" + lien + ", description=" + description + ", statut=" + statut + '}';
+    }
+    
 }

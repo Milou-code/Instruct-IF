@@ -4,6 +4,7 @@
  */
 package dao;
 
+import java.util.List;
 import metier.modele.Matiere;
 
 /**
@@ -27,6 +28,16 @@ public class MatiereDao {
                     .getSingleResult();
         } catch (Exception ex) {
             return null; // aucune matière trouvée
+        }
+    }
+    
+    public List<Matiere> getMatieresDAO() {
+        try {
+            return JpaUtil.obtenirContextePersistance()
+                    .createQuery("SELECT m FROM Matiere m", Matiere.class)
+                    .getResultList();
+        } catch (Exception ex) {
+            return null;
         }
     }
 }

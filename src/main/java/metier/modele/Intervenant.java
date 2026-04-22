@@ -69,6 +69,22 @@ public class Intervenant {
         return email;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getMdp() {
+        return mdp;
+    }
+
+    public int getNbSoutien() {
+        return nbSoutien;
+    }
+
+    public Boolean getLibre() {
+        return libre;
+    }
+
     public String getNumeroTelephone() {
         return numeroTelephone;
     }

@@ -29,6 +29,10 @@ public class Matiere {
     public Matiere() {
     }
 
+    public List<Theme> getThemes() {
+        return themes;
+    }
+
     public Matiere(String nom) {
         this.nom = nom;
     }

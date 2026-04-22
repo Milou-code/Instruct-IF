@@ -4,6 +4,9 @@
  */
 package dao;
 
+import java.util.List;
+import metier.modele.Eleve;
+import metier.modele.Intervenant;
 import metier.modele.Soutien;
 
 /**
@@ -15,7 +18,46 @@ public class SoutienDao {
         JpaUtil.obtenirContextePersistance().persist(soutien);
     }
     
+    public Soutien merge(Soutien soutien) {
+        return JpaUtil.obtenirContextePersistance().merge(soutien);
+    }
+    
     public Soutien findById(Long id) {
         return JpaUtil.obtenirContextePersistance().find(Soutien.class, id);
+    }
+    
+    public List<Soutien> getSoutiensEleveDAO(Eleve eleve) {
+        try {
+            return JpaUtil.obtenirContextePersistance()
+                    .createQuery("SELECT s FROM Soutien s WHERE s.eleve.id = :id", Soutien.class)
+                    .setParameter("id", eleve.getId())
+                    .getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+    
+    public List<Soutien> getSoutiensIntervenantStartedDAO(Intervenant intervenant) {
+        try {
+            return JpaUtil.obtenirContextePersistance()
+                    .createQuery("SELECT s FROM Soutien s WHERE s.intervenant.id = :id AND s.statut = :statut", Soutien.class)
+                    .setParameter("id", intervenant.getId())
+                    .setParameter("statut", "STARTED")
+                    .getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+    
+    public List<Soutien> getSoutiensIntervenantFinishedDAO(Intervenant intervenant) {
+        try {
+            return JpaUtil.obtenirContextePersistance()
+                    .createQuery("SELECT s FROM Soutien s WHERE s.intervenant.id = :id AND s.statut = :statut", Soutien.class)
+                    .setParameter("id", intervenant.getId())
+                    .setParameter("statut", "FINISHED")
+                    .getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }

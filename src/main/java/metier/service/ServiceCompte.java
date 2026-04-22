@@ -43,8 +43,10 @@ public class ServiceCompte {
             Message.envoyerMail(
                     "contact@instruct.if", 
                     eleve.getEmail(), 
-                    "Inscription Réussie", 
-                    "Votre inscription à notre application a fonctionné");
+                    "Bienvenue sur le réseau INSTRUCT'IF", 
+                    String.format("Bonjour %s, nous te confirmons ton inscription sur le réseau INSTRUCT'IF. Si tu as besoin d'un soutien pour tes leçons ou tes devoirs, rends-toi sur notre site pour uns mise en relation avec un intervenant.",
+                    eleve.getPrenom()));
+                    
             creationSucces = true;
         }
         catch (Exception ex){
@@ -53,8 +55,9 @@ public class ServiceCompte {
             Message.envoyerMail(
                     "contact@instruct.if", 
                     eleve.getEmail(), 
-                    "Inscription Échouée", 
-                    "Votre inscription à notre application n'a pas fonctionné");
+                    "Echec de l'inscription sur le réseau INSTRUCT'IF", 
+                    String.format("Bonjour %s, ton inscription sur le réseau INSTRUCUT'IF a malencontreusement échoué... Merci de recommencer ultérieurement.",
+                    eleve.getPrenom()));
         }
         finally {
             JpaUtil.fermerContextePersistance();
