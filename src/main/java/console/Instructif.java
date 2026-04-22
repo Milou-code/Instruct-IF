@@ -10,12 +10,14 @@ import dao.ThemeDao;
 import java.time.LocalDate;
 import java.util.List;
 import metier.modele.Eleve;
+import metier.modele.Intervenant;
 import metier.modele.Matiere;
 import metier.modele.Soutien;
 import metier.modele.Theme;
 import metier.service.ServiceCompte;
 import metier.service.ServiceInitialisation;
 import metier.service.ServiceSoutien;
+import static util.Saisie.lireChaine;
 
 /**
  *
@@ -49,8 +51,23 @@ public class Instructif {
             ThemeDao themeDao = new ThemeDao();
             Theme theme = themeDao.findByName("Programmation");
             Soutien soutien = ServiceSoutien.creerDemande(eleve, matiere, theme, "Ceci est une description");
+            
+            // Connexion intervenant et affichage du soutien assignée
+            String email = lireChaine("Entrez votre email :");
+            String mdp = lireChaine("Entrez votre mot de passe :");
+            Intervenant intervenant = ServiceCompte.authentificationIntervenant(email, mdp);
+            if (intervenant != null) {
+                System.out.println("---- CONNEXION REUSSIE ----");
+                System.out.println("Voici votre soutien : ");
+                Soutien soutienIntervenant = ServiceSoutien.getSoutienEnCoursIntervenant(intervenant);
+                if (soutienIntervenant != null) {
+                    System.out.println(soutienIntervenant.toString());
+                }
+            }
+            
+            
             if (soutien.getIntervenant() != null) {
-                ServiceSoutien.envoiBilan(soutien, "Bravo tu as fait une super séance !");
+                ServiceSoutien.finirSoutien(soutien, "Bravo tu as fait une super séance !");
             }
             List<Soutien> listeSoutiensEleve = ServiceSoutien.getSoutiensEleve(eleve);
 

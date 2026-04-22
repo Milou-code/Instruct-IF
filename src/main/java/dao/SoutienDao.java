@@ -37,13 +37,13 @@ public class SoutienDao {
         }
     }
     
-    public List<Soutien> getSoutiensIntervenantStartedDAO(Intervenant intervenant) {
+    public Soutien getSoutienIntervenantStartedDAO(Intervenant intervenant) {
         try {
             return JpaUtil.obtenirContextePersistance()
                     .createQuery("SELECT s FROM Soutien s WHERE s.intervenant.id = :id AND s.statut = :statut", Soutien.class)
                     .setParameter("id", intervenant.getId())
                     .setParameter("statut", "STARTED")
-                    .getResultList();
+                    .getSingleResult();
         } catch (Exception ex) {
             return null;
         }

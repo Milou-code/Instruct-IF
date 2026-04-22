@@ -4,6 +4,7 @@
  */
 package metier.modele;
 
+import java.time.LocalTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,6 +32,8 @@ public class Soutien {
     private String description;
     private String statut;
     private String bilan;
+    private LocalTime heureDebut;
+    private LocalTime heureFin;
 
     public Soutien() {
     }
@@ -41,6 +44,22 @@ public class Soutien {
         this.theme = theme;
         this.description = description;
         this.statut = "STARTED";
+    }
+
+    public LocalTime getHeureDebut() {
+        return heureDebut;
+    }
+
+    public void setHeureDebut(LocalTime heureDebut) {
+        this.heureDebut = heureDebut;
+    }
+
+    public LocalTime getHeureFin() {
+        return heureFin;
+    }
+
+    public void setHeureFin(LocalTime heureFin) {
+        this.heureFin = heureFin;
     }
 
     public void setIntervenant(Intervenant intervenant) {

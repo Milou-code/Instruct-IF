@@ -15,6 +15,10 @@ public class IntervenantDao {
         JpaUtil.obtenirContextePersistance().persist(intervenant);
     }
     
+    public void merge(Intervenant intervenant) {
+        JpaUtil.obtenirContextePersistance().merge(intervenant);
+    }
+    
     public Intervenant findById(Long id) {
         return JpaUtil.obtenirContextePersistance().find(Intervenant.class, id);
     }

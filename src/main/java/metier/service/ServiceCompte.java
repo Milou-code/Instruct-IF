@@ -77,11 +77,13 @@ public class ServiceCompte {
     }
     
      public static Intervenant authentificationIntervenant(String mail, String mdp){
+        JpaUtil.creerContextePersistance();
         IntervenantDao intervenantDao = new IntervenantDao();
         Intervenant i1 = intervenantDao.findByLogin(mail, mdp);
         if (i1 == null){
             System.out.println("Erreur de connexion");
         }
+        JpaUtil.fermerContextePersistance();
         return i1;
     }
 }

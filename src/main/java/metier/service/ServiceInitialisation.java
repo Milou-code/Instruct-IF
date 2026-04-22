@@ -27,7 +27,7 @@ public class ServiceInitialisation {
         List<Intervenant> intervenants = new ArrayList<>();
 
         // 3 Professeurs
-        intervenants.add(new Professeur("Lycée", "Dupont", "Alice", 6, 3, "alice.dupont@mail.fr", "mdp123", "0612345678"));
+        intervenants.add(new Professeur("Lycée", "Dupont", "Camille", 6, 3, "camille.dupont@mail.fr", "mdp123", "0612345678"));
         intervenants.add(new Professeur("Collège", "Martin", "Jean", 5, 2, "jean.martin@mail.fr", "password", "0623456789"));
         intervenants.add(new Professeur("Université", "Bernard", "Claire", 7, 4, "claire.bernard@mail.fr", "securepass", "0634567890"));
 

@@ -46,9 +46,9 @@ public class ServiceSoutien {
                 soutien.setIntervenant(intervenant);
                 intervenant.ajouterSoutien();
                 intervenant.setLibre(false);
-                soutien.setStatut("FOUND");
                 
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
+                soutien.setHeureDebut(LocalTime.now());
                 String time = LocalTime.now().format(dtf); // récupère l'heure actuelle et formate
 
                 String message = String.format(
@@ -79,19 +79,25 @@ public class ServiceSoutien {
         return soutien;
     }
     
-    public static void envoiBilan(Soutien soutien, String corps) {
+    public static void finirSoutien(Soutien soutien, String corps) {
         try {
             JpaUtil.creerContextePersistance();
             JpaUtil.ouvrirTransaction();
             
             SoutienDao soutienDao = new SoutienDao();
             soutien.setBilan(corps);
+            soutien.setHeureFin(LocalTime.now());
             soutien.setStatut("FINISHED");
+            
+            IntervenantDao intervenantDao = new IntervenantDao();
+            Intervenant intervenant = soutien.getIntervenant();
+            intervenant.setLibre(true);
+            
+            intervenantDao.merge(intervenant);
             soutienDao.merge(soutien);
             JpaUtil.validerTransaction();
             
             Eleve eleve = soutien.getEleve();
-            Intervenant intervenant = soutien.getIntervenant();
             Message.envoyerMail(
                     intervenant.getEmail(), 
                     eleve.getEmail(), 
@@ -136,18 +142,18 @@ public class ServiceSoutien {
         return listeSoutiens;
     }
     
-    public static List<Soutien> getSoutiensEnCoursIntervenant(Intervenant intervenant) {
-        List<Soutien> listeSoutiens = null;
+    public static Soutien getSoutienEnCoursIntervenant(Intervenant intervenant) {
+        Soutien soutien = null;
         try {
             JpaUtil.creerContextePersistance();
             SoutienDao soutienDao = new SoutienDao();
-            listeSoutiens = soutienDao.getSoutiensIntervenantStartedDAO(intervenant);
+            soutien = soutienDao.getSoutienIntervenantStartedDAO(intervenant);
         } catch (Exception ex) {
             return null;
         } finally {
             JpaUtil.fermerContextePersistance();
         }
-        return listeSoutiens;
+        return soutien;
     }
 
     public static List<Soutien> getSoutiensTerminesIntervenant(Intervenant intervenant) {
