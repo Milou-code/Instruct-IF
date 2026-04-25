@@ -5,14 +5,18 @@
 package metier.service;
 
 import static console.Instructif.printlnConsoleIHM;
+import dao.EtablissementDao;
 import dao.IntervenantDao;
 import dao.JpaUtil;
 import dao.MatiereDao;
 import dao.SoutienDao;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import metier.modele.Eleve;
+import metier.modele.Etablissement;
 import metier.modele.Intervenant;
 import metier.modele.Matiere;
 import metier.modele.Soutien;
@@ -50,7 +54,9 @@ public class ServiceSoutien {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
                 soutien.setHeureDebut(LocalTime.now());
                 String time = LocalTime.now().format(dtf); // récupère l'heure actuelle et formate
-
+                LocalDate dateAjd = LocalDate.now();
+                soutien.setDate(dateAjd);
+                
                 String message = String.format(
                         "Bonjour %s. Merci de prendre en charge la demande de soutien en %s demandée à %s par %s en classe de %sème.",
                         intervenant.getPrenom(),
@@ -93,11 +99,24 @@ public class ServiceSoutien {
             Intervenant intervenant = soutien.getIntervenant();
             intervenant.setLibre(true);
             
+            Eleve eleve = soutien.getEleve();
+            EtablissementDao etablissementDao = new EtablissementDao();
+            Etablissement etablissement = eleve.getEtablissement();
+            etablissement.ajouterSoutien();
+            
+            Duration duree = Duration.between(
+                soutien.getHeureDebut(),
+                soutien.getHeureFin()
+            );
+
+            long minutes = duree.toMinutes();
+            etablissement.augmenterDureeTotale(minutes);
+            
+            etablissementDao.merge(etablissement);
             intervenantDao.merge(intervenant);
             soutienDao.merge(soutien);
             JpaUtil.validerTransaction();
             
-            Eleve eleve = soutien.getEleve();
             Message.envoyerMail(
                     intervenant.getEmail(), 
                     eleve.getEmail(), 

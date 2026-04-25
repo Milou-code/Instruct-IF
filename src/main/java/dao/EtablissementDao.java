@@ -19,6 +19,10 @@ public class EtablissementDao {
         JpaUtil.obtenirContextePersistance().persist(etablissement);
     }
     
+    public void merge(Etablissement etablissement) {
+    JpaUtil.obtenirContextePersistance().merge(etablissement);
+    }
+    
     public Etablissement findById(String codeUAI) {
         return JpaUtil.obtenirContextePersistance().find(Etablissement.class, codeUAI);
     }

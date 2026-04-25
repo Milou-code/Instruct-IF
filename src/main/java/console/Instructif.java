@@ -38,7 +38,7 @@ public class Instructif {
 
         printlnConsoleIHM("Création compte");
         Eleve e1 = new Eleve("Alice", "Dutour", 3, LocalDate.of(2012, 5, 21), "alice@mail.fr", "12345");
-        Boolean resultat1 = serviceInscription.inscrireEleve(e1, "0010802S");
+        Boolean resultat1 = serviceInscription.inscrireEleve(e1, "0010080G");
         printlnConsoleIHM(resultat1 + " -> Inscription eleve E1 " + e1);
         
         Eleve eleve = ServiceCompte.authentificationEleve("alice@mail.fr", "12345");
