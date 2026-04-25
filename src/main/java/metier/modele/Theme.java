@@ -34,6 +34,14 @@ public class Theme {
         return nom;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Matiere getMatiere() {
+        return matiere;
+    }
+    
     public void setMatiere(Matiere matiere) {
         this.matiere = matiere;
     }

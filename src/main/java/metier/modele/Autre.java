@@ -21,5 +21,8 @@ public class Autre extends Intervenant {
         super(nom, prenom, niveauScolaireMin, niveauScolaireMax, email, mdp, numeroTelephone);
         this.activite = activite;
     }
-    
+
+    public String getActivite() {
+        return activite;
+    }
 }

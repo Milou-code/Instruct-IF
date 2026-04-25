@@ -75,7 +75,6 @@ public class Soutien {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-    
 
     public void setIntervenant(Intervenant intervenant) {
         this.intervenant = intervenant;
@@ -124,10 +123,9 @@ public class Soutien {
     public String getStatut() {
         return statut;
     }
-
+    
     @Override
     public String toString() {
         return "Soutien{" + "id=" + id + ", eleve=" + eleve + ", intervenant=" + intervenant + ", matiere=" + matiere + ", theme=" + theme + ", lien=" + lien + ", description=" + description + ", statut=" + statut + '}';
     }
-    
 }

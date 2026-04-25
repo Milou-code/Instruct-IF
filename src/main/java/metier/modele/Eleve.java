@@ -69,6 +69,14 @@ public class Eleve {
         return etablissement;
     }
 
+    public LocalDate getDateNaissance() {
+        return dateNaissance;
+    }
+
+    public String getMdp() {
+        return mdp;
+    }
+    
     public void setEtablissement(Etablissement etablissement) {
         this.etablissement = etablissement;
     }

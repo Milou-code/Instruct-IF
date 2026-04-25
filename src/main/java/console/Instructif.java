@@ -36,26 +36,31 @@ public class Instructif {
     private static void testEleve() {
         ServiceCompte serviceInscription = new ServiceCompte();
 
+        // Création du compte d'un élève
         printlnConsoleIHM("Création compte");
         Eleve e1 = new Eleve("Alice", "Dutour", 3, LocalDate.of(2012, 5, 21), "alice@mail.fr", "12345");
         Boolean resultat1 = serviceInscription.inscrireEleve(e1, "0010080G");
         printlnConsoleIHM(resultat1 + " -> Inscription eleve E1 " + e1);
         
+        // Authentification de l'élève
         Eleve eleve = ServiceCompte.authentificationEleve("alice@mail.fr", "12345");
   
         if (eleve != null) {
             JpaUtil.creerContextePersistance();
             
+            // Création d'une demande de soutien & envoi de la notification 
             MatiereDao matiereDao = new MatiereDao();
             Matiere matiere = matiereDao.findByName("Informatique");
             ThemeDao themeDao = new ThemeDao();
             Theme theme = themeDao.findByName("Programmation");
             Soutien soutien = ServiceSoutien.creerDemande(eleve, matiere, theme, "Ceci est une description");
             
-            // Connexion intervenant et affichage du soutien assignée
+            // Authentification de l'intervenant
             String email = lireChaine("Entrez votre email :");
             String mdp = lireChaine("Entrez votre mot de passe :");
             Intervenant intervenant = ServiceCompte.authentificationIntervenant(email, mdp);
+            
+            // Affichage du soutien assigné si un internvenant a été trouvé
             if (intervenant != null) {
                 System.out.println("---- CONNEXION REUSSIE ----");
                 System.out.println("Voici votre soutien : ");
@@ -65,10 +70,12 @@ public class Instructif {
                 }
             }
             
-            
+            // Fin du soutien et écriture du bilan de la séance
             if (soutien.getIntervenant() != null) {
                 ServiceSoutien.finirSoutien(soutien, "Bravo tu as fait une super séance !");
             }
+            
+            // Affichage de tous les soutiens réalisés par un élève
             List<Soutien> listeSoutiensEleve = ServiceSoutien.getSoutiensEleve(eleve);
 
             if (listeSoutiensEleve != null) {
@@ -80,6 +87,7 @@ public class Instructif {
                 System.out.println("Aucun soutien trouvé ou erreur.");
             }
             
+            // Affichage de tous les soutiens réalisés par un intervenant
             List<Soutien> listeSoutiensIntervenant = ServiceSoutien.getSoutiensTerminesIntervenant(soutien.getIntervenant());
 
             if (listeSoutiensIntervenant != null) {

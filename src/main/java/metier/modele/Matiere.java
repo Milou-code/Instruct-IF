@@ -41,6 +41,10 @@ public class Matiere {
         return nom;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public void setThemes(List themes) {
         this.themes = themes;
     }

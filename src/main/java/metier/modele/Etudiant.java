@@ -23,5 +23,12 @@ public class Etudiant extends Intervenant {
         this.specialite = specialite;
         this.universite = universite;
     }
-    
+
+    public String getSpecialite() {
+        return specialite;
+    }
+
+    public String getUniversite() {
+        return universite;
+    }  
 }

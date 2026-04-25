@@ -21,6 +21,8 @@ public class Professeur extends Intervenant {
         super(nom, prenom, niveauScolaireMin, niveauScolaireMax, email, mdp, numeroTelephone);
         this.typeEtablissement = typeEtablissement;
     }
-    
-    
+
+    public String getTypeEtablissement() {
+        return typeEtablissement;
+    }
 }

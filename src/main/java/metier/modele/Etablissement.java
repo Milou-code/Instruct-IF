@@ -62,6 +62,14 @@ public class Etablissement {
     public int getNb_soutiens() {
         return nbSoutiens;
     }
+
+    public int getNbSoutiens() {
+        return nbSoutiens;
+    }
+
+    public long getDureeTotaleSoutiens() {
+        return dureeTotaleSoutiens;
+    }
    
     public void setNom(String nom) {
         this.nom = nom;

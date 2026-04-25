@@ -7,7 +7,6 @@ package metier.service;
 import dao.IntervenantDao;
 import dao.JpaUtil;
 import dao.MatiereDao;
-import dao.ThemeDao;
 import java.util.ArrayList;
 import java.util.List;
 import metier.modele.Autre;
