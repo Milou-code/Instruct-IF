@@ -45,18 +45,19 @@ public class ServiceSoutien {
             if(intervenant == null) {
                 printlnConsoleIHM("Aucun Intervenant Disponible");
                 soutien.setStatut("CANCELLED");
+                soutienDao.merge(soutien);
             }
             else {
                 soutien.setIntervenant(intervenant);
                 intervenant.ajouterSoutien();
                 intervenant.setLibre(false);
-                
+
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
                 soutien.setHeureDebut(LocalTime.now());
                 String time = LocalTime.now().format(dtf); // récupère l'heure actuelle et formate
                 LocalDate dateAjd = LocalDate.now();
                 soutien.setDate(dateAjd);
-                
+
                 String message = String.format(
                         "Bonjour %s. Merci de prendre en charge la demande de soutien en %s demandée à %s par %s en classe de %sème.",
                         intervenant.getPrenom(),
@@ -64,16 +65,18 @@ public class ServiceSoutien {
                         time,
                         eleve.getPrenom(),
                         niveauEleve
-                );                
+                );
                 Message.envoyerNotification(intervenant.getNumeroTelephone(), message);
-                
+
                 String lien = String.format(
                         "https://servif.insa-lyon.fr/InteractIF/visio.html?eleve=%s&intervenant=%s%s",
                         eleve.getEmail(),
                         intervenant.getPrenom().toLowerCase().charAt(0),
                         intervenant.getNom().toLowerCase()
-                );    
+                );
                 soutien.setLien(lien);
+                intervenantDao.merge(intervenant);
+                soutienDao.merge(soutien);
             }
             JpaUtil.validerTransaction();
         } catch (Exception ex){
@@ -187,5 +190,19 @@ public class ServiceSoutien {
             JpaUtil.fermerContextePersistance();
         }
         return listeSoutiens;
+    }
+
+    public static List<Etablissement> getEtablissements() {
+        List<Etablissement> listeEtablissements = null;
+        try {
+            JpaUtil.creerContextePersistance();
+            EtablissementDao etablissementDao = new EtablissementDao();
+            listeEtablissements = etablissementDao.findAll();
+        } catch (Exception ex) {
+            return null;
+        } finally {
+            JpaUtil.fermerContextePersistance();
+        }
+        return listeEtablissements;
     }
 }

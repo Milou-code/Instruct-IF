@@ -67,23 +67,29 @@ public class ServiceCompte {
     
     public static Eleve authentificationEleve(String mail, String mdp){
         JpaUtil.creerContextePersistance();
-        EleveDao eleveDao = new EleveDao();
-        Eleve e1 = eleveDao.findByLogin(mail, mdp);
-        if (e1 == null){
-            System.out.println("Erreur de connexion");
+        try {
+            EleveDao eleveDao = new EleveDao();
+            Eleve e1 = eleveDao.findByLogin(mail, mdp);
+            if (e1 == null){
+                System.out.println("Erreur de connexion");
+            }
+            return e1;
+        } finally {
+            JpaUtil.fermerContextePersistance();
         }
-        JpaUtil.fermerContextePersistance();
-        return e1;
     }
-    
-     public static Intervenant authentificationIntervenant(String mail, String mdp){
+
+    public static Intervenant authentificationIntervenant(String mail, String mdp){
         JpaUtil.creerContextePersistance();
-        IntervenantDao intervenantDao = new IntervenantDao();
-        Intervenant i1 = intervenantDao.findByLogin(mail, mdp);
-        if (i1 == null){
-            System.out.println("Erreur de connexion");
+        try {
+            IntervenantDao intervenantDao = new IntervenantDao();
+            Intervenant i1 = intervenantDao.findByLogin(mail, mdp);
+            if (i1 == null){
+                System.out.println("Erreur de connexion");
+            }
+            return i1;
+        } finally {
+            JpaUtil.fermerContextePersistance();
         }
-        JpaUtil.fermerContextePersistance();
-        return i1;
     }
 }

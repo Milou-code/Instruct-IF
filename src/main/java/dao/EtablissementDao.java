@@ -4,6 +4,7 @@
  */
 package dao;
 
+import java.util.List;
 import metier.modele.Etablissement;
 
 /**
@@ -25,5 +26,15 @@ public class EtablissementDao {
     
     public Etablissement findById(String codeUAI) {
         return JpaUtil.obtenirContextePersistance().find(Etablissement.class, codeUAI);
+    }
+
+    public List<Etablissement> findAll() {
+        try {
+            return JpaUtil.obtenirContextePersistance()
+                    .createQuery("SELECT e FROM Etablissement e", Etablissement.class)
+                    .getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }
