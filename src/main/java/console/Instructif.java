@@ -5,8 +5,6 @@
 package console;
 
 import dao.JpaUtil;
-import dao.MatiereDao;
-import dao.ThemeDao;
 import java.time.LocalDate;
 import java.util.List;
 import metier.modele.Eleve;
@@ -30,74 +28,117 @@ public class Instructif {
         ServiceInitialisation.InitIntervenants();
         ServiceInitialisation.InitMatiereTheme();
         testEleve();
+        testIntervenant();
         JpaUtil.fermerFabriquePersistance();
     }
     
     private static void testEleve() {
+        System.out.println("\n===== TEST ELEVE =====");
+
         ServiceCompte serviceInscription = new ServiceCompte();
 
-        // Création du compte d'un élève
+        // Création du compte
         printlnConsoleIHM("Création compte");
-        Eleve e1 = new Eleve("Alice", "Dutour", 3, LocalDate.of(2012, 5, 21), "alice@mail.fr", "12345");
+        Eleve e1 = new Eleve("Dutour", "Alice", 3, LocalDate.of(2012, 5, 21), "alice@mail.fr", "12345");
         Boolean resultat1 = serviceInscription.inscrireEleve(e1, "0010080G");
-        printlnConsoleIHM(resultat1 + " -> Inscription eleve E1 " + e1);
-        
-        // Authentification de l'élève
+        System.out.println("[INFO] Résultat inscription : " + resultat1);
+        System.out.println("[INFO] Eleve créé : " + e1);
+
+        // Authentification
+        System.out.println("\n[INFO] Tentative de connexion élève...");
         Eleve eleve = ServiceCompte.authentificationEleve("alice@mail.fr", "12345");
-  
+
         if (eleve != null) {
-            JpaUtil.creerContextePersistance();
-            
-            // Création d'une demande de soutien & envoi de la notification 
-            MatiereDao matiereDao = new MatiereDao();
-            Matiere matiere = matiereDao.findByName("Informatique");
-            ThemeDao themeDao = new ThemeDao();
-            Theme theme = themeDao.findByName("Programmation");
-            Soutien soutien = ServiceSoutien.creerDemande(eleve, matiere, theme, "Ceci est une description");
-            
-            // Authentification de l'intervenant
-            String email = lireChaine("Entrez votre email :");
-            String mdp = lireChaine("Entrez votre mot de passe :");
-            Intervenant intervenant = ServiceCompte.authentificationIntervenant(email, mdp);
-            
-            // Affichage du soutien assigné si un internvenant a été trouvé
-            if (intervenant != null) {
-                System.out.println("---- CONNEXION REUSSIE ----");
-                System.out.println("Voici votre soutien : ");
-                Soutien soutienIntervenant = ServiceSoutien.getSoutienEnCoursIntervenant(intervenant);
-                if (soutienIntervenant != null) {
-                    System.out.println(soutienIntervenant.toString());
+            System.out.println("[OK] Authentification réussie : " + eleve.getPrenom());
+
+            Matiere matiereSoutien = null;
+            Theme themeSoutien = null;
+
+            System.out.println("\n[INFO] Récupération des matières...");
+            List<Matiere> matieres = ServiceSoutien.getMatieres();
+
+            for (Matiere matiere : matieres) {
+                System.out.println(" - Matière trouvée : " + matiere.getNom());
+
+                if (matiere.getNom().equals("Informatique")) {
+                    matiereSoutien = matiere;
+                    System.out.println("[OK] Matière sélectionnée : Informatique");
+                    break;
                 }
             }
-            
-            // Fin du soutien et écriture du bilan de la séance
-            if (soutien.getIntervenant() != null) {
-                ServiceSoutien.finirSoutien(soutien, "Bravo tu as fait une super séance !");
-            }
-            
-            // Affichage de tous les soutiens réalisés par un élève
-            List<Soutien> listeSoutiensEleve = ServiceSoutien.getSoutiensEleve(eleve);
 
-            if (listeSoutiensEleve != null) {
-                for (Soutien s : listeSoutiensEleve) {
-                    System.out.println("---- Soutien ----");
-                    System.out.println(s.toString());
+            if (matiereSoutien != null) {
+                System.out.println("\n[INFO] Parcours des thèmes de la matière...");
+                for (Theme theme : matiereSoutien.getThemes()) {
+                    System.out.println("   - Thème trouvé : " + theme.getNom());
+
+                    if (theme.getNom().equals("Programmation")) {
+                        themeSoutien = theme;
+                        System.out.println("[OK] Thème sélectionné : Programmation");
+                        break;
+                    }
+                }
+            }
+
+            System.out.println("\n[INFO] Création demande de soutien...");
+            Soutien soutien = ServiceSoutien.creerDemande(
+                eleve,
+                matiereSoutien,
+                themeSoutien,
+                "Ceci est la description du soutien."
+            );
+
+            if (soutien != null) {
+                System.out.println("[OK] Soutien créé !");
+                if (soutien.getIntervenant() != null) {
+                    System.out.println(" -> Intervenant assigné : " + soutien.getIntervenant().getPrenom());
+                    System.out.println(" -> Email : " + soutien.getIntervenant().getEmail());
+                    System.out.println(" -> Mot de passe : " + soutien.getIntervenant().getMdp());
+                }
+                else {
+                    System.out.println("Soutien annulé -> Aucun intervenant n'a été trouvé");
                 }
             } else {
-                System.out.println("Aucun soutien trouvé ou erreur.");
+                System.out.println("[ERREUR] Échec création soutien");
             }
-            
-            // Affichage de tous les soutiens réalisés par un intervenant
-            List<Soutien> listeSoutiensIntervenant = ServiceSoutien.getSoutiensTerminesIntervenant(soutien.getIntervenant());
 
-            if (listeSoutiensIntervenant != null) {
-                for (Soutien s : listeSoutiensEleve) {
-                    System.out.println("---- Soutien ----");
-                    System.out.println(s.toString());
-                }
+        } else {
+            System.out.println("[ERREUR] Authentification échouée");
+        }
+    }
+    
+    private static void testIntervenant() {
+        System.out.println("\n===== TEST INTERVENANT =====");
+
+        String email = lireChaine("Entrez votre email :");
+        String mdp = lireChaine("Entrez votre mot de passe :");
+
+        System.out.println("\n[INFO] Tentative de connexion intervenant...");
+        Intervenant intervenant = ServiceCompte.authentificationIntervenant(email, mdp);
+
+        if (intervenant != null) {
+            System.out.println("[OK] Connexion réussie !");
+            System.out.println(" -> Nom : " + intervenant.getNom());
+            System.out.println(" -> Prénom : " + intervenant.getPrenom());
+
+            System.out.println("\n[INFO] Recherche soutien en cours...");
+            Soutien soutienIntervenant = ServiceSoutien.getSoutienEnCoursIntervenant(intervenant);
+
+            if (soutienIntervenant != null) {
+                System.out.println("[OK] Soutien trouvé !");
+                System.out.println(" -> Élève : " + soutienIntervenant.getEleve().getPrenom());
+                System.out.println(" -> Matière : " + soutienIntervenant.getMatiere().getNom());
+                System.out.println(" -> Thème : " + soutienIntervenant.getTheme().getNom());
+
+                System.out.println("\n[INFO] Fin du soutien...");
+                ServiceSoutien.finirSoutien(soutienIntervenant, "Bravo tu as fait une super séance !");
+                System.out.println("[OK] Soutien terminé !");
             } else {
-                System.out.println("Aucun soutien trouvé ou erreur.");
+                System.out.println("[INFO] Aucun soutien en cours");
             }
+
+        } else {
+            System.out.println("[ERREUR] Connexion échouée");
         }
     }
     
